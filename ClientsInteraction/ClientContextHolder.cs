@@ -8,12 +8,11 @@ namespace MyShop.ClientsInteraction
     internal class ClientContextHolder
     {
         private const Int32 BUFFER_SIZE = 512;
+
         private readonly Socket _clientSocket;
-        private readonly CommandParser _commandParser;
         public ClientContextHolder(Socket socket)
         {
             _clientSocket = socket;
-            _commandParser = new CommandParser();
         }
 
         public void StartCommunication()
@@ -59,18 +58,7 @@ namespace MyShop.ClientsInteraction
         {
             try
             {
-                if (command == "listcars")
-                {
-                    StringBuilder sb = new StringBuilder();
-                    Car cars = Car.CreateForSql();
-                    List<CarInfo> response = cars.ListCars();
-                    foreach (var car in response)
-                        sb.Append(String.Format("Brand: {0}, year: {1}\n", car.Brand, car.Year));
-
-                    Byte[] buffer = Encoding.UTF8.GetBytes(sb.ToString());
-                    _clientSocket.Send(buffer, buffer.Length, SocketFlags.None);
-                }
-                
+                throw new NotImplementedException();
             }
             catch (Exception ex)
             {

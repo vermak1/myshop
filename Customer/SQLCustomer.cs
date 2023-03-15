@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Data;
-using System.Runtime.CompilerServices;
+using System.Data.SqlClient;
+using System.Threading.Tasks;
 
 namespace MyShop.Database
 {
@@ -14,31 +14,46 @@ namespace MyShop.Database
         {
             _executor = new SQLQueryExecutor();
         }
-        public CustomerInfo FindCustomerById(Guid id)
+        public async Task<CustomerInfo> FindCustomerByIdAsync(Guid id)
         {
-            Dictionary<String, String> queryParams = new Dictionary<String, String>()
+            using (var connection = await SQLFactory.GetConnectionAsync())
             {
-                ["@id"] = id.ToString()
-            };
-            DataSet data = _executor.RunStoredProcedureRead("FindCustomerById", queryParams);
-            return GetCustomerInfoFromDataSet(data);
+                Dictionary<String, String> queryParams = new Dictionary<String, String>()
+                {
+                    ["@id"] = id.ToString()
+                };
+                DataSet data = await _executor.RunStoredProcedureReadAsync("FindCustomerById", queryParams, connection);
+                var userInfo = ConvertToCustomerInfo(data);
+                if (userInfo == null)
+                    Console.WriteLine("There is no user with id {0}", id);
+                return userInfo;
+            }
         }
 
-        public CustomerInfo FindCustomerByName(String name)
+        public async Task<CustomerInfo> FindCustomerByNameAsync(String firstName, String lastName)
         {
-            Dictionary<String, String> queryParams = new Dictionary<String, String>()
+            using (var connection = await SQLFactory.GetConnectionAsync()) 
             {
-                ["@firstname"] = name
-            };
-            DataSet data = _executor.RunStoredProcedureRead("FindCustomerByName", queryParams);
-            return GetCustomerInfoFromDataSet(data);
+                Dictionary<String, String> queryParams = new Dictionary<String, String>()
+                {
+                    ["@firstname"] = firstName,
+                    ["@lastname"] = lastName
+                };
+                DataSet data = await _executor.RunStoredProcedureReadAsync("FindCustomerByName", queryParams, connection);
+                var userInfo = ConvertToCustomerInfo(data);
+                if (userInfo == null)
+                    Console.WriteLine("There is no user with first name {0} and last name {1}", firstName, lastName);
+                return userInfo;
+            }
         }
 
-        private CustomerInfo GetCustomerInfoFromDataSet(DataSet data)
+        private CustomerInfo ConvertToCustomerInfo(DataSet data)
         {
+            if (data == null)
+                throw new ArgumentNullException(nameof(data));
             if (data.Tables[0].Rows.Count == 0)
             {
-                Console.WriteLine("There is not result from query");
+                Console.WriteLine("There is not user returned from DB");
                 return null;
             }
             return new CustomerInfo()

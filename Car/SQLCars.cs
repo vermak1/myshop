@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
+using System.Threading.Tasks;
 using MyShop.Database;
 
 namespace MyShop
@@ -14,20 +16,25 @@ namespace MyShop
             _executor = new SQLQueryExecutor();
         }
 
-        public List<CarInfo> ListCars()
+        public async Task<List<CarInfo>> ListCarsAsync()
         {
-            DataSet data = _executor.RunStoredProcedureRead("GetAllCars", new Dictionary<string, string>());
-            List<CarInfo> list = GetCarsInfo(data);
+            using (var connection = await SQLFactory.GetConnectionAsync())
+            {
+                DataSet data = await _executor.RunStoredProcedureReadAsync("ListAllCars", new Dictionary<string, string>(), connection);
+                List<CarInfo> list = ConvertToCarInfo(data);
 
-            return list;
+                if(list.Count == 0)
+                    Console.WriteLine("There are not cars available");
+                return list;
+            }
         }
 
-        private List<CarInfo> GetCarsInfo(DataSet data)
+        private List<CarInfo> ConvertToCarInfo(DataSet data)
         {
             List<CarInfo> list = new List<CarInfo>();
             if (data.Tables[0].Rows.Count == 0)
             {
-                Console.WriteLine("There is not result from query");
+                Console.WriteLine("There is not result parsed from DataSet");
                 return list;
             }
 

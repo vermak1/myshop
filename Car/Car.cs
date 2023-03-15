@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace MyShop
 {
@@ -18,9 +19,9 @@ namespace MyShop
             return new Car(sql);
         }
 
-        public List<CarInfo> ListCars()
+        public async Task<List<CarInfo>> ListCarsAsync()
         {
-            return _carRepository.ListCars();
+            return await _carRepository.ListCarsAsync();
         }
     }
 }

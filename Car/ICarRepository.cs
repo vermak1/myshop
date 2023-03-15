@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 
 namespace MyShop
 {
     internal interface ICarRepository
     {
-        List<CarInfo> ListCars();
+        Task<List<CarInfo>> ListCarsAsync();
     }
 }

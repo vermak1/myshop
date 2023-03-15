@@ -55,15 +55,18 @@
     <Compile Include="Customer\CustomerInfo.cs" />
     <Compile Include="Car\SQLCars.cs" />
     <Compile Include="Customer\ICustomerRepository.cs" />
-    <Compile Include="Database\SQLContext.cs" />
+    <Compile Include="Database\SQLFactory.cs" />
     <Compile Include="Customer\SQLCustomer.cs" />
     <Compile Include="Database\SQLQueryExecutor.cs" />
+    <Compile Include="Database\TransactionWrapper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Database\StoredProcedures.sql" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

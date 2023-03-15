@@ -1,5 +1,6 @@
-﻿using MyShop.Database;
-using System;
+﻿using System;
+using System.Threading.Tasks;
+using MyShop.Database;
 
 namespace MyShop
 {
@@ -18,14 +19,14 @@ namespace MyShop
             return new Customer(sqlCustomer);
         }
 
-        public CustomerInfo FindCustomerByName(String name)
+        public async Task<CustomerInfo> FindCustomerByNameAsync(String firstName, String lastName)
         {
-            return _repository.FindCustomerByName(name);
+            return await _repository.FindCustomerByNameAsync(firstName, lastName);
         }
 
-        public CustomerInfo FindCustomerById(Guid id)
+        public async Task<CustomerInfo> FindCustomerByIdAsync(Guid id)
         {
-            return _repository.FindCustomerById(id);
+            return await _repository.FindCustomerByIdAsync(id);
         }
     }
 }
