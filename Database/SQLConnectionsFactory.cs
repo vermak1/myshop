@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace MyShop.Database
 {
-    internal class SQLFactory
+    internal class SQLConnectionsFactory
     {
         public static async Task<SqlConnection> GetConnectionAsync()
         {

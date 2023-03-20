@@ -4,21 +4,22 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
 using MyShop.Database;
+using MyShop.CommonLib;
 
 namespace MyShop
 {
     internal class SQLCars : ICarRepository
     {
-        private readonly SQLQueryExecutor _executor;
+        private readonly SQLStoredProcedureExecutor _executor;
 
         public SQLCars()
         {
-            _executor = new SQLQueryExecutor();
+            _executor = new SQLStoredProcedureExecutor();
         }
 
         public async Task<List<CarInfo>> ListCarsAsync()
         {
-            using (var connection = await SQLFactory.GetConnectionAsync())
+            using (var connection = await SQLConnectionsFactory.GetConnectionAsync())
             {
                 DataSet data = await _executor.RunStoredProcedureReadAsync("ListAllCars", new Dictionary<string, string>(), connection);
                 List<CarInfo> list = ConvertToCarInfo(data);

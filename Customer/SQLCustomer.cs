@@ -1,22 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
 using System.Threading.Tasks;
+using MyShop.CommonLib;
 
 namespace MyShop.Database
 {
     internal class SQLCustomer : ICustomerRepository
     {
-        private readonly SQLQueryExecutor _executor;
+        private readonly SQLStoredProcedureExecutor _executor;
 
         public SQLCustomer()
         {
-            _executor = new SQLQueryExecutor();
+            _executor = new SQLStoredProcedureExecutor();
         }
         public async Task<CustomerInfo> FindCustomerByIdAsync(Guid id)
         {
-            using (var connection = await SQLFactory.GetConnectionAsync())
+            using (var connection = await SQLConnectionsFactory.GetConnectionAsync())
             {
                 Dictionary<String, String> queryParams = new Dictionary<String, String>()
                 {
@@ -32,7 +32,10 @@ namespace MyShop.Database
 
         public async Task<CustomerInfo> FindCustomerByNameAsync(String firstName, String lastName)
         {
-            using (var connection = await SQLFactory.GetConnectionAsync()) 
+            if (String.IsNullOrEmpty(firstName) || String.IsNullOrEmpty(lastName))
+                throw new ArgumentException("first name or last name is null or empty");
+
+            using (var connection = await SQLConnectionsFactory.GetConnectionAsync()) 
             {
                 Dictionary<String, String> queryParams = new Dictionary<String, String>()
                 {
@@ -44,6 +47,43 @@ namespace MyShop.Database
                 if (userInfo == null)
                     Console.WriteLine("There is no user with first name {0} and last name {1}", firstName, lastName);
                 return userInfo;
+            }
+        }
+
+        public async Task<Int32> CreateCustomerAsync(CustomerInfo customerInfo)
+        {
+            if (customerInfo == null)
+                throw new ArgumentNullException(nameof(customerInfo));
+
+            using (var connection = await SQLConnectionsFactory.GetConnectionAsync())
+            {
+                Dictionary<String, String> queryParams = new Dictionary<String, String>()
+                {
+                    ["@id"] = Guid.NewGuid().ToString(),
+                    ["@firstname"] = customerInfo.FirstName,
+                    ["@lastname"] = customerInfo.LastName,
+                    ["@createddate"] = DateTime.Now.ToString(),
+                    ["@address"] = customerInfo.Address,
+                    ["@city"] = customerInfo.City,
+                    ["@number"] = customerInfo.Number,
+                    ["@mail"] = customerInfo.Mail
+                };
+                Int32 rows = -1;
+                try
+                {
+                    rows = await _executor.RunStoredProcedureWriteAsync("CreateCustomer", queryParams, connection);
+                }
+                catch (Exception ex) 
+                {
+                    Console.WriteLine("Error during customer creation.\nError: {0}", ex.Message);
+                    throw;
+                }
+                
+                if (rows == 1)
+                    Console.WriteLine("Customer created successfully");
+                else
+                    Console.WriteLine("Customer hasn't been created");
+                return rows;
             }
         }
 

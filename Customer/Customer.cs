@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using MyShop.Database;
+using MyShop.CommonLib;
 
 namespace MyShop
 {
@@ -27,6 +28,11 @@ namespace MyShop
         public async Task<CustomerInfo> FindCustomerByIdAsync(Guid id)
         {
             return await _repository.FindCustomerByIdAsync(id);
+        }
+
+        public async Task<Int32> CreateCustomerAsync(CustomerInfo customerInfo)
+        {
+            return await _repository.CreateCustomerAsync(customerInfo);
         }
     }
 }
