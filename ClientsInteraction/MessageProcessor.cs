@@ -32,6 +32,8 @@ namespace MyShop.ClientsInteraction
 
         public static async Task SendMessageAsync(String message, Socket clientSocket)
         {
+            if (String.IsNullOrEmpty(message))
+                throw new ArgumentException(nameof(message));
             try
             {
                 ArraySegment<Byte> buffer = new ArraySegment<Byte>(Encoding.UTF8.GetBytes(message));

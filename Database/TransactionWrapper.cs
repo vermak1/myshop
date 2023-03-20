@@ -8,6 +8,9 @@ namespace MyShop.Database
     {
         public static async Task<Boolean> ExecuteInTransactionAsync(Func<Task> func)
         {
+            if (func == null)
+                throw new ArgumentNullException(nameof(func));
+
             using(var connection = await SQLConnectionsFactory.GetConnectionAsync())
             {
                 SqlTransaction transaction = connection.BeginTransaction();

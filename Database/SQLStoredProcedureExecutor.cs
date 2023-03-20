@@ -27,7 +27,7 @@ namespace MyShop.Database
 
             catch (Exception ex)
             {
-                Console.WriteLine("Query execution has been failed, exception type: {0}\nError: {1}", ex.GetType(), ex.Message);
+                Console.WriteLine("Stored procedure execution has been failed\nError: {0}",ex.Message);
                 throw;
             }
             return ds;
@@ -49,7 +49,7 @@ namespace MyShop.Database
 
             catch (Exception ex)
             {
-                Console.WriteLine("Query execution has been failed, exception type: {0}\nError: {1}", ex.GetType(), ex.Message);
+                Console.WriteLine("Stored procedure execution has been failed\nError: {0}",  ex.Message);
                 throw;
             }
 
@@ -78,7 +78,7 @@ namespace MyShop.Database
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error within query {0} execution: {1}", procedureName,  ex.Message);
+                Console.WriteLine("Error within stored procedure {0} execution: {1}", procedureName,  ex.Message);
             }
             
             return data;
@@ -106,7 +106,7 @@ namespace MyShop.Database
             }
             catch(Exception ex) 
             {
-                Console.WriteLine("Error within query {0} execution: {1}", procedureName, ex.Message);
+                Console.WriteLine("Error within stored procedure {0} execution: {1}", procedureName, ex.Message);
             }
             return rowsAffected;
         }

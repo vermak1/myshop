@@ -8,6 +8,9 @@ namespace MyShop.Commands
     {
         public static async Task ExecuteCommandAsync(CommandInfo command)
         {
+            if (command == null)
+                throw new ArgumentNullException(nameof(command));
+
             try
             {
                 switch(command.CommandType)

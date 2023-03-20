@@ -32,6 +32,9 @@ namespace MyShop
 
         private List<CarInfo> ConvertToCarInfo(DataSet data)
         {
+            if (data == null)
+                throw new ArgumentNullException(nameof(data));
+
             List<CarInfo> list = new List<CarInfo>();
             if (data.Tables[0].Rows.Count == 0)
             {
